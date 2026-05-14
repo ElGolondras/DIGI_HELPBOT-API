@@ -84,6 +84,11 @@ class LoginData(BaseModel):
     username: str
     password: str
 
+@app.get("/")
+async def root():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse("/web/login")
+
 @app.post("/login")
 def login_usuario(datos: LoginData):
     db = get_db_connection()
