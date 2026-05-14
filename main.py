@@ -368,8 +368,8 @@ from fastapi.staticfiles import StaticFiles as StaticFilesWeb
 import os as _os
 
 # Templates y archivos estáticos del panel web
-_templates_dir = _os.path.join(_os.path.dirname(__file__), "templates")
-_static_dir    = _os.path.join(_os.path.dirname(__file__), "static")
+_templates_dir = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "templates")
+_static_dir    = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "static")
 
 templates = Jinja2Templates(directory=_templates_dir)
 app.mount("/web/static", StaticFilesWeb(directory=_static_dir), name="web-static")
