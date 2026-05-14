@@ -371,6 +371,12 @@ import os as _os
 _templates_dir = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "templates")
 _static_dir    = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "static")
 
+print(f"[DEBUG] templates dir: {_templates_dir}")
+print(f"[DEBUG] static dir: {_static_dir}")
+print(f"[DEBUG] templates existe: {_os.path.exists(_templates_dir)}")
+print(f"[DEBUG] static existe: {_os.path.exists(_static_dir)}")
+print(f"[DEBUG] archivos en templates: {_os.listdir(_templates_dir) if _os.path.exists(_templates_dir) else 'NO EXISTE'}")
+
 templates = Jinja2Templates(directory=_templates_dir)
 app.mount("/web/static", StaticFilesWeb(directory=_static_dir), name="web-static")
 
