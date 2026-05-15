@@ -486,17 +486,27 @@ async def web_ticket_post(request: Request, problema: str = FastForm(...), urgen
     r = _require_login(session)
     if r: return r
     user = session["user"]
-    conn = get_db_connection()
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO incidencias (usuario, problema, urgencia, estado, fecha, departamento, email) VALUES (%s,%s,%s,'pendiente',NOW(),%s,%s)",
-            (user["nombre_completo"], problema, urgencia, user.get("departamento",""), user.get("email",""))
-        )
-        conn.commit()
-        cursor.execute("SELECT * FROM incidencias WHERE usuario=%s ORDER BY id DESC LIMIT 5", (user["nombre_completo"],))
-        tickets = cursor.fetchall()
-        cursor.close(); conn.close()
+    tickets = []
+    try:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO incidencias (usuario, problema, urgencia, estado, fecha, departamento, email) VALUES (%s,%s,%s,'pendiente',NOW(),%s,%s)",
+                (user["nombre_completo"], problema, urgencia, user.get("departamento",""), user.get("email",""))
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            conn2 = get_db_connection()
+            if conn2:
+                cursor2 = conn2.cursor(dictionary=True)
+                cursor2.execute("SELECT * FROM incidencias WHERE usuario=%s ORDER BY id DESC LIMIT 5", (user["nombre_completo"],))
+                tickets = cursor2.fetchall()
+                cursor2.close()
+                conn2.close()
+    except Exception as e:
+        print(f"[ERROR ticket_post] {e}")
     return _render(request, "crear_ticket.html", {"pagina": "ticket", "mis_tickets": tickets, "success": True}, session)
 
 # ── GESTIÓN TICKETS (solo IT) ──────────────────────────────────────────────────
