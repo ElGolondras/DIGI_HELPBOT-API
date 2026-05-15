@@ -378,8 +378,7 @@ print(f"[DEBUG] templates existe: {_os.path.exists(_templates_dir)}")
 print(f"[DEBUG] static existe: {_os.path.exists(_static_dir)}")
 print(f"[DEBUG] archivos en templates: {_os.listdir(_templates_dir) if _os.path.exists(_templates_dir) else 'NO EXISTE'}")
 
-_jinja_env = Environment(loader=FileSystemLoader(_templates_dir), cache_size=0)
-templates = Jinja2Templates(env=_jinja_env)
+templates = Jinja2Templates(directory=_templates_dir)
 app.mount("/web/static", StaticFilesWeb(directory=_static_dir), name="web-static")
 
 # ── Helpers de sesión (cookie simple firmada) ──────────────────────────────────
