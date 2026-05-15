@@ -529,11 +529,16 @@ async def web_tickets_actualizar(request: Request, ticket_id: int = FastForm(...
     session = _get_session(request)
     r = _require_it(session)
     if r: return r
-    conn = get_db_connection()
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute("UPDATE incidencias SET estado=%s WHERE id=%s", (nuevo_estado, ticket_id))
-        conn.commit(); cursor.close(); conn.close()
+    try:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE incidencias SET estado=%s WHERE id=%s", (nuevo_estado, ticket_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+    except Exception as e:
+        print(f"[ERROR actualizar_ticket] {e}")
     return RedirectResponse("/web/tickets", status_code=302)
 
 @app.get("/web/tickets/eliminar/{ticket_id}")
@@ -541,11 +546,16 @@ async def web_tickets_eliminar(request: Request, ticket_id: int):
     session = _get_session(request)
     r = _require_it(session)
     if r: return r
-    conn = get_db_connection()
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM incidencias WHERE id=%s", (ticket_id,))
-        conn.commit(); cursor.close(); conn.close()
+    try:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM incidencias WHERE id=%s", (ticket_id,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+    except Exception as e:
+        print(f"[ERROR eliminar_ticket] {e}")
     return RedirectResponse("/web/tickets", status_code=302)
 
 # ── GESTIÓN USUARIOS (solo IT) ─────────────────────────────────────────────────
@@ -605,9 +615,14 @@ async def web_usuarios_eliminar(request: Request, uid: int):
     session = _get_session(request)
     r = _require_it(session)
     if r: return r
-    conn = get_db_connection()
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM usuarios WHERE id=%s", (uid,))
-        conn.commit(); cursor.close(); conn.close()
+    try:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM usuarios WHERE id=%s", (uid,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+    except Exception as e:
+        print(f"[ERROR eliminar_usuario] {e}")
     return RedirectResponse("/web/usuarios", status_code=302)
